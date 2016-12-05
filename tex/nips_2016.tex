@@ -7,7 +7,7 @@
 % to avoid loading the natbib package, add option nonatbib:
 % \usepackage[nonatbib]{nips_2016}
 
-\usepackage{nips_2016}
+\usepackage[final]{nips_2016}
 
 % to compile a camera-ready version, add the [final] option, e.g.:
 % \usepackage[final]{nips_2016}
@@ -21,8 +21,9 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-\title{Formatting instructions for NIPS 2016}
+\title{Yelp Reviews Topic Modeling to Predict Business Latent Features}
 
+\author{Abby Tisdale \And Nicholas Gonzalez}
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
 % authors: \And and \AND.
@@ -33,14 +34,6 @@
 % on the second line, try using \AND instead of \And before the third
 % author name.
 
-\author{
-  David S.~Hippocampus\thanks{Use footnote for providing further
-    information about author (webpage, alternative
-    address)---\emph{not} for acknowledging funding agencies.} \\
-  Department of Computer Science\\
-  Cranberry-Lemon University\\
-  Pittsburgh, PA 15213 \\
-  \texttt{hippo@cs.cranberry-lemon.edu} \\
   %% examples of more authors
   %% \And
   %% Coauthor \\
@@ -62,345 +55,73 @@
   %% Affiliation \\
   %% Address \\
   %% \texttt{email} \\
-}
 
 \begin{document}
-% \nipsfinalcopy is no longer used
 
 \maketitle
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch
-  (3~picas) on both the left- and right-hand margins. Use 10~point
-  type, with a vertical spacing (leading) of 11~points.  The word
-  \textbf{Abstract} must be centered, bold, and in point size 12. Two
-  line spaces precede the abstract. The abstract must be limited to
-  one paragraph.
+  Yelp has multiple large publicly available datasets.  In this paper we explain research in topic modeling of business reviews which was then used to predict the latent features of businesses.  We began with non-negative matrix factorization for topic modeling of reviews for businesses.  Next we linearly regressed over the topic modeling with each business latent feature to determine if we could predict those latent features from the topic modeling.  We also used Multinomial Logistic Regression over the ratings for each business.  Our most notable predictions came from predicting the stars ratings for each business on a 5 point scale.  Our results show promise in the use of using topic modeling to predict latent features but also reveal a large amount of work that could be further done to increase accuracy.
 \end{abstract}
 
-\section{Submission of papers to NIPS 2016}
-
-\textbf{There is a new style file for papers submitted in 2016!}
+\section{Introduction}
 
-NIPS requires electronic submissions.  The electronic submission site
-is
-\begin{center}
-  \url{https://cmt.research.microsoft.com/NIPS2016/}
-\end{center}
 
-Please read carefully the instructions below and follow them
-faithfully.
+The Yelp Dataset Challenge provided information about local businesses in 10 cities across 4 countries.  This information includes text reviews, business attributes, check-ins, tips, and photos.  The datasets most relevant to this paper are the business and reviews sets.  The businesses dataset includes over 85,000 businesses with their respective latent features like “Has TV”, "stars", “Delivery”, and “Good for kids”.  The reviews dataset of over 2 million reviews includes the text reviews for each business in the set. 
 
-\subsection{Style}
 
-Papers to be submitted to NIPS 2016 must be prepared according to the
-instructions presented here. Papers may only be up to eight pages
-long, including figures. Since 2009 an additional ninth page
-\emph{containing only acknowledgments and/or cited references} is
-allowed. Papers that exceed nine pages will not be reviewed, or in any
-other way considered for presentation at the conference.
+In order to do topic modeling on the reviews we used non-negative matrix factorization.  Non-negative matrix factorization has been shown to be a useful decomposition for multivariate data.  Our implementation is a variation on an algorithm presented and experimentally tested by Lee and Seung.\footnote{Lee et. al}
 
-The margins in 2016 are the same as since 2007, which allow for
-$\sim$$15\%$ more words in the paper compared to earlier years.
 
-Authors are required to use the NIPS \LaTeX{} style files obtainable
-at the NIPS website as indicated below. Please make sure you use the
-current files and not previous versions. Tweaking the style files may
-be grounds for rejection.
+We are able to then split the data into training and testing sets.  For each business latent feature which is represented with a binary we linearly regress over the topic modeling data in order to get weights that we can then test on our testing data set.  Similarly for latent features which are over a range, such as stars, we use Multinomial Logistic Regression instead.
 
-\subsection{Retrieval of style files}
+Logistic Regression is a common technique for binary categorical classification.  It creates a model based on the probability of a binary classification from a set of independent variables.  This model creates weights that can then be used to predict the binary classification on new data.  Logistic Regression models are prone to over-fitting and overconfidence such that it is not ideal for detecting a small subset which is classified differently.  Despite these limitations, we chose to use this technique because we had many binary classifiers for the businesses such that this technique was easy to apply to each of them individually.  We did however see evidence of over-fitting which was a drawback to using this technique.  The drawbacks were especially evident when a very small subset was classified differently from the majority, as would be expected.
 
-The style files for NIPS and other conference information are
-available on the World Wide Web at
-\begin{center}
-  \url{http://www.nips.cc/}
-\end{center}
-The file \verb+nips_2016.pdf+ contains these instructions and
-illustrates the various formatting requirements your NIPS paper must
-satisfy.
-
-The only supported style file for NIPS 2016 is \verb+nips_2016.sty+,
-rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{}
-  2.09, Microsoft Word, and RTF are no longer supported!}
-
-The new \LaTeX{} style file contains two optional arguments:
-\verb+final+, which creates a camera-ready copy, and \verb+nonatbib+,
-which will not load the \verb+natbib+ package for you in case of
-package clash.
-
-At submission time, please omit the \verb+final+ option. This will
-anonymize your submission and add line numbers to aid review.  Please
-do \emph{not} refer to these line numbers in your paper as they will
-be removed during generation of camera-ready copies.
-
-The file \verb+nips_2016.tex+ may be used as a ``shell'' for writing
-your paper. All you have to do is replace the author, title, abstract,
-and text of the paper with your own.
-
-The formatting instructions contained in these style files are
-summarized in Sections \ref{gen_inst}, \ref{headings}, and
-\ref{others} below.
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-The text must be confined within a rectangle 5.5~inches (33~picas)
-wide and 9~inches (54~picas) long. The left margin is 1.5~inch
-(9~picas).  Use 10~point type with a vertical spacing (leading) of
-11~points.  Times New Roman is the preferred typeface throughout, and
-will be selected for you by default.  Paragraphs are separated by
-\nicefrac{1}{2}~line space (5.5 points), with no indentation.
-
-The paper title should be 17~point, initial caps/lower case, bold,
-centered between two horizontal rules. The top rule should be 4~points
-thick and the bottom rule should be 1~point thick. Allow
-\nicefrac{1}{4}~inch space above and below the title to rules. All
-pages should start at 1~inch (6~picas) from the top of the page.
-
-For the final version, authors' names are set in boldface, and each
-name is centered above the corresponding address. The lead author's
-name is to be listed first (left-most), and the co-authors' names (if
-different address) are set to follow. If there is only one co-author,
-list both author and co-author side by side.
-
-Please pay special attention to the instructions in Section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-\section{Headings: first level}
-\label{headings}
-
-All headings should be lower case (except for first word and proper
-nouns), flush left, and bold.
-
-First-level headings should be in 12-point type.
-
-\subsection{Headings: second level}
-
-Second-level headings should be in 10-point type.
-
-\subsubsection{Headings: third level}
-
-Third-level headings should be in 10-point type.
-
-\paragraph{Paragraphs}
-
-There is also a \verb+\paragraph+ command available, which sets the
-heading in bold, flush left, and inline with the text, with the
-heading followed by 1\,em of space.
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-These instructions apply to everyone.
-
-\subsection{Citations within the text}
-
-The \verb+natbib+ package will be loaded for you by default.
-Citations may be author/year or numeric, as long as you maintain
-internal consistency.  As to the format of the references themselves,
-any style is acceptable as long as it is used consistently.
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-If you wish to load the \verb+natbib+ package with options, you may
-add the following before loading the \verb+nips_2016+ package:
-\begin{verbatim}
-   \PassOptionsToPackage{options}{natbib}
-\end{verbatim}
-
-If \verb+natbib+ clashes with another package you load, you can add
-the optional argument \verb+nonatbib+ when loading the style file:
-\begin{verbatim}
-   \usepackage[nonatbib]{nips_2016}
-\end{verbatim}
-
-As submission is double blind, refer to your own published work in the
-third person. That is, use ``In the previous work of Jones et
-al.\ [4],'' not ``In our previous work [4].'' If you cite your other
-papers that are not widely available (e.g., a journal paper under
-review), use anonymous author names in the citation, e.g., an author
-of the form ``A.\ Anonymous.''
-
-\subsection{Footnotes}
-
-Footnotes should be used sparingly.  If you do require a footnote,
-indicate footnotes with a number\footnote{Sample of the first
-  footnote.} in the text. Place the footnotes at the bottom of the
-page on which they appear.  Precede the footnote with a horizontal
-rule of 2~inches (12~picas).
-
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
-
-\subsection{Figures}
-
-All artwork must be neat, clean, and legible. Lines should be dark
-enough for purposes of reproduction. The figure number and caption
-always appear after the figure. Place one line space before the figure
-caption and one line space after the figure. The figure caption should
-be lower case (except for first word and proper nouns); figures are
-numbered consecutively.
-
-You may use color figures.  However, it is best for the figure
-captions and the paper body to be legible if the paper is printed in
-either black/white or in color.
-\begin{figure}[h]
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
-
-\subsection{Tables}
-
-All tables must be centered, neat, clean and legible.  The table
-number and title always appear before the table.  See
-Table~\ref{sample-table}.
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-Note that publication-quality tables \emph{do not contain vertical
-  rules.} We strongly suggest the use of the \verb+booktabs+ package,
-which allows for typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-\begin{table}[t]
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule{1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\section{Final instructions}
-
-Do not change any aspects of the formatting parameters in the style
-files.  In particular, do not modify the width or length of the
-rectangle the text should fit into, and do not change font sizes
-(except perhaps in the \textbf{References} section; see below). Please
-note that pages should be numbered.
-
-\section{Preparing PDF files}
-
-Please prepare submission files with paper size ``US Letter,'' and
-not, for example, ``A4.''
-
-Fonts were the main cause of problems in the past years. Your PDF file
-must only contain Type 1 or Embedded TrueType fonts. Here are a few
-instructions to achieve this.
-
-\begin{itemize}
-
-\item You should directly generate PDF files using \verb+pdflatex+.
-
-\item You can check which fonts a PDF files uses.  In Acrobat Reader,
-  select the menu Files$>$Document Properties$>$Fonts and select Show
-  All Fonts. You can also use the program \verb+pdffonts+ which comes
-  with \verb+xpdf+ and is available out-of-the-box on most Linux
-  machines.
-
-\item The IEEE has recommendations for generating PDF files whose
-  fonts are also acceptable for NIPS. Please see
-  \url{http://www.emfield.org/icuwb2010/downloads/IEEE-PDF-SpecV32.pdf}
-
-\item \verb+xfig+ "patterned" shapes are implemented with bitmap
-  fonts.  Use "solid" shapes instead.
-
-\item The \verb+\bbold+ package almost always uses bitmap fonts.  You
-  should use the equivalent AMS Fonts:
-\begin{verbatim}
-   \usepackage{amsfonts}
-\end{verbatim}
-followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or
-\verb+\mathbb{C}+ for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You
-can also use the following workaround for reals, natural and complex:
-\begin{verbatim}
-   \newcommand{\RR}{I\!\!R} %real numbers
-   \newcommand{\Nat}{I\!\!N} %natural numbers
-   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
-\end{verbatim}
-Note that \verb+amsfonts+ is automatically loaded by the
-\verb+amssymb+ package.
-
-\end{itemize}
-
-If your file contains type 3 fonts or non embedded TrueType fonts, we
-will ask you to fix it.
-
-\subsection{Margins in \LaTeX{}}
-
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+ from the \verb+graphicx+ package. Always
-specify the figure width as a multiple of the line width as in the
-example below:
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-See Section 4.4 in the graphics bundle documentation
-(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
-
-A number of width problems arise when \LaTeX{} cannot properly
-hyphenate a line. Please give LaTeX hyphenation hints using the
-\verb+\-+ command when necessary.
-
-\subsubsection*{Acknowledgments}
-
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments go at the end of the paper. Do not include
-acknowledgments in the anonymized submission, only in the final paper.
+In addition to Logistic Regression we made use of Multinomial Logistic Regression which is an extension to classify within the ratings range.  For instance, the stars rating for a business is on a 5 point scale, so Multinomial Logistic Regression can be used to train a model which given new data can estimate the probability that the new data would be in each of the star categories respectively.  We experimented with different category groupings in efforts to get higher accuracies, but we found that the 5 categories had the best predictions as compared with the probability of random guessing.  The results of those groupings will be discussed more later.
+
+The goal of this experimentation was to determine what, if any, latent features of a business we could predict from its reviews.  The impact of such predictions is obvious in that Yelp or other similar services could predict features without having to procure manual input.  With adequate accuracy, this would allow Yelp to decrease the sparsity of its latent features and provide better service overall.
+
+\section{Procedure}
+We started with the set of reviews which were business specific and in individual json objects.  We then collected the reviews for each business into one large review for each business.  We created a frequency list of words for each business, making a sparse matrix.  To decrease the sparse matrix size we also filtered out words that occurred only once and irrelevant high-usage words such as "and" or "the".  At this point we were able to perform the non-negative matrix factorization by minimizing the Frobenius norm between the approximation and the actual matrix.  We also used the multiplicative update for its ease of implementation and guaranteed monotonicity of the objective.\footnote{Dipalo} 
+
+
+Next we created a matrix of a subset of the latent features for each business.  We chose to filter out any latent features which did not have a true-false value for simplicity.  We then had to reorder the rows of this matrix to match the order of our sparse business-review-topics matrix.  Once we had created our two matrices, one of business and their latent features and the other of businesses and their topic distributions of reviews, we were ready to linearly regress.
+
+After initial investigations with only binary features we also expanded our considerations to include the stars rating for each business.  This involved a very similar process of creating a vector of business ratings so that we could perform Multinomial Logistic Regression.
+
+
+We split the dataset into a training set of approximately 66\% of the data and and testing set of 33\%.  Then for each latent feature in our subset we linearly regressed with respect to that feature to get appropriate weights.  Next we tested those weights on our testing set so that we could then inspect the accuracy of each prediction to determine which latent features were most easily predicted from review topic modeling. 
+
+For the Multinomial Logistic Regression over ratings we decided to try various groupings in order to discover greater accuracy models.  We considered groupings such as 1-2, 3-4, and 5 as well as 1-3, 4, and 5.  We also tried 1 or 5 compared to 2, 3, or 4.  We realized after the fact that this could have been similarly been done with Logistic Regression since it became a binary.  Our most successful grouping was the standard 5 categories for which the results will be discussed more later.
+
+\section{Challenges}
+
+We had significant troubles trying to work around and overcome the sparsity of the dataset.  Despite having so many businesses and reviews, a surprisingly small subset of businesses had data for the same latent features and often when they did the data was significantly skewed.  For example, a subset of the businesses had the latent feature “Accepts Credit Cards” but the majority of the businesses with this feature accepted credit cards so our initial attempts at predicting were worse that predicting all businesses would accept credit cards.
+
+Another challenge arose from the copius amounts of useless text in reviews.  In order to determine word frequencies we would have had to consider all of the words in all of the 2 million reviews.  This computation was unreasonable in both space and time considerations.  To work around this computational barrier we had to make sacrifices about how we processed the text reviews.  These sacrifices included dropping single instance words and by using a threshold to leave out overly common words such as "I", "and", or "the".  This allowed topic modeling to be feasible but also limited our dataset.
+
+Lastly, we faced challenges in trying to predict ratings of businesses.  Although our accuracy for 5 categories was higher than random chance we were disappointed to see even better.  We tried to work around this lower than expected accuracy by trying different groupings but only found our predictions became less useful the more general we made them.
+
+\section{Results}
+
+We had mixed results.
+
+\section{Discussion}
+
+Our data was crappy.
+
+\section{Future Work}
+
+Future work could expand the text data sets by finding creative ways to overcome the space and computation restrictions.  This may involve representing the data differently or processing it in unique ways.  Additionally, gaining access to more computing power could simplify many of the problems involved.  There were also other latent features that we did not explore that could be further investigated.
+
+Our most underwhelming results involved latent features for which most businesses either had an entry that was true or did not have an entry at all, such as "Takes Credit Cards".  Our accuracy was severely limited in these features as we were unable to effectively distinguish when a data point should not have been in the category.  Future work could attempt to expand the data set to have more examples for which the feature was false or investigate models which would be more able to distinguish these situations.  One possibility could be to use anomaly detection algorithms and consider elements which are false as anomalies.
+
+Our results of predicting rating from reviews are somewhat trivial and unnecessary since text reviews often accommodate ratings.  However, we see significant potential for using other text sources for which this could be more of an initial proof of concept.  For example, twitter data could potentially be substituted for review text to be the predictor.  Topic modeling as reflected in this paper could be applied to any text repository regarding an entity to then predict ratings.  Thus, future work could investigate the viability of using text inputs other than reviews to predict latent features of businesses or other entities.  
 
 \section*{References}
 
-References follow the acknowledgments. Use unnumbered first-level
-heading for the references. Any choice of citation style is acceptable
-as long as you are consistent. It is permissible to reduce the font
-size to \verb+small+ (9 point) when listing the references. {\bf
-  Remember that you can use a ninth page as long as it contains
-  \emph{only} cited references.}
-\medskip
+[1] Lee, Daniel D.\ \& Seung, H. S.\ Algorithms for Non-negative Matrix Factorization, \url{https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization.pdfs}.
 
-\small
-
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
-for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
-T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
-  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
-  Exploring Realistic Neural Models with the GEneral NEural SImulation
-  System.}  New York: TELOS/Springer--Verlag.
-
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
-learning and recall at excitatory recurrent synapses and cholinergic
-modulation in rat hippocampal region CA3. {\it Journal of
-  Neuroscience} {\bf 15}(7):5249-5262.
+[2] Dipalo, William C.\  (2016) Solution Manual: Math189r Homework 3, Problem 5.
 
 \end{document}
