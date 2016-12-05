@@ -20,6 +20,7 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
+\usepackage{graphicx}
 
 \title{Yelp Reviews Topic Modeling to Predict Business Latent Features}
 
@@ -100,11 +101,21 @@ We had significant troubles trying to work around and overcome the sparsity of t
 
 Another challenge arose from the copius amounts of useless text in reviews.  In order to determine word frequencies we would have had to consider all of the words in all of the 2 million reviews.  This computation was unreasonable in both space and time considerations.  To work around this computational barrier we had to make sacrifices about how we processed the text reviews.  These sacrifices included dropping single instance words and by using a threshold to leave out overly common words such as "I", "and", or "the".  This allowed topic modeling to be feasible but also limited our dataset.
 
+On top of this we had a difficult time dealing with the amount of fictional or misspelled  words which were in reviews. words such as "Goooood" and "Goood" likely mean the same think however we were not able to register them as the same word. This lead to frequency of words being lower then they should have been as well as greatly increased the number total words which we had to consider. Overall this step of the process was the limiting step in the processing pipeline and caused us to only consider 10,000 business with 400,00 reviews.
+
 Lastly, we faced challenges in trying to predict ratings of businesses.  Although our accuracy for 5 categories was higher than random chance we were disappointed to see even better.  We tried to work around this lower than expected accuracy by trying different groupings but only found our predictions became less useful the more general we made them.
 
 \section{Results}
 
-We had mixed results.
+The first step in our processing pipeline was to generate topics from all of the reviews.  fill in stuff about topics.
+
+Once the topics were generated we started by using regression to classify whether a business had a particular feature. To do this we simply determining the coefficients using our training set and then classified the testing set by determine if the data multiplied to the coefficients was closer to 1 or 0. We ran this individually for each binary latent feature we extracted. The accuracy of each of the classifiers is shown in figure 1.
+
+\begin{figure}[h]
+\includegraphics[scale = .4]{../fpAccuracy}
+
+
+\end{figure}
 
 \section{Discussion}
 
