@@ -1,0 +1,64 @@
+load('bussinessPlusTopics.mat')
+ratings = csvread('/Users/Nick/Documents/Fall 2016/Big Data/abby/ratingsRevised.csv');
+rawFeature = ratings; %5 ~10
+feature = [];
+rData = [];
+
+%Get the data points which actually has the features
+for i = 1:length(rawFeature)
+    if rawFeature(i) > -.5
+        revisedCat = floor(rawFeature(i));
+        feature = [feature ; revisedCat];
+        rData = [rData ; W(i,:)];
+    end
+        
+        
+        
+end
+
+numPoints = length(feature);
+
+feaTrain = feature(1:2*numPoints/3);
+rDataTrain = rData(1:2*numPoints/3,:);
+
+feaTest = feature(2*numPoints/3 : numPoints);
+rDataTest = rData(2*numPoints/3 : numPoints,:);
+
+b = mnrfit(rDataTrain,feaTrain);
+
+[y,I] =  sort(mnrval(b,rDataTest),2,'descend');
+
+
+pred = I(:,1);
+
+
+results = pred - feaTest;
+
+SampleNum = length(feaTest);
+
+Accuracy = length(results(results==0))/ SampleNum
+
+finalBar = [];
+for i = 1:5
+    res = [];
+    sum(pred == i)
+    sum(feaTest == i)
+    for j = 1:5
+        res = [res sum(pred(find(feaTest==j))==i)]; 
+         
+    end
+    finalBar = [finalBar ; res]; 
+end
+
+hb = bar(finalBar, 'stacked');
+
+hbc = get(hb, 'Children');
+set(hbc{1}, 'FaceColor', 'r');
+set(hbc{2}, 'FaceColor', 'g');
+legend('hi','1 Star','2 Star','3 Star','4 Star','5 Star');
+
+xlabel('Predicted Rating')
+ylab
+
+title('True Values of Predicted Classifications')
+

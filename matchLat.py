@@ -15,8 +15,8 @@ for i in range(len(idList)):
 
 
 #Get the features and the bussiness correlated 
-filename1 = 'businessLatentFt_ids.csv'
-filename2 = 'businessLatentFt_data.csv'
+filename1 = 'businessLatentFt_ids.csv'#'businessRatings_ids.csv'#'businessLatentFt_ids.csv'
+filename2 = 'businessLatentFt_data.csv'#'businessRatings_data.csv' #'businessLatentFt_data.csv'
 with open(filename1, 'rb') as f1, open(filename2, 'rb') as f2:
   
   idReader = csv.reader(f1)
