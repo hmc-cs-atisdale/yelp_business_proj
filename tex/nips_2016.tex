@@ -112,9 +112,16 @@ The first step in our processing pipeline was to generate topics from all of the
 Once the topics were generated we started by using regression to classify whether a business had a particular feature. To do this we simply determining the coefficients using our training set and then classified the testing set by determine if the data multiplied to the coefficients was closer to 1 or 0. We ran this individually for each binary latent feature we extracted. The accuracy of each of the classifiers is shown in figure 1.
 
 \begin{figure}[h]
+\centering
 \includegraphics[scale = .4]{../fpAccuracy}
+\caption{This graph represents the classification accuracy of the classifier for all of the binary latent features we had. As you can see we got an average accuracy of close to 80\%.}
+\end{figure}
 
+While these results seemed positive when we looked into our data set closer we notice that in many cases our features had much more of one classification then another. Thus we decided to look into the rate in which our classifiers had false positives and false negatives. our results are shown in figure 2.
 
+\begin{figure}
+\includegraphics[scale = .4]{../fpPlot}
+\caption{This graph represents the classification accuracy of the classifier for all of the binary latent features we had. As you can see we got an average accuracy of close to 80\%.}
 \end{figure}
 
 \section{Discussion}
